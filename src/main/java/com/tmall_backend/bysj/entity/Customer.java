@@ -9,7 +9,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class User {
+public class Customer {
     private String id;
     private String name;
+    private String password;
 }
