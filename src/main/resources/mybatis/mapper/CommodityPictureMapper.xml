@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.CommodityPictureMapper">
+    <resultMap id="commodityPicMap" type="CommodityPicture">
+        <id column="id" property="id"/>
+        <result column="commodity_id" property="commodityID"/>
+        <result column="picture_type" property="pictureType"/>
+        <result column="picture_sequence" property="pictureSequence"/>
+        <result column="picture_obj" property="pictureObj"/>
+    </resultMap>
+
+    <select id="queryMainPicByCommodityId" resultMap="commodityPicMap">
+        select * from commodity_picture
+        where commodity_id = #{commodityId} and picture_type = 0
+        order by picture_sequence;
+    </select>
+
+    <select id="queryDetailPicByCommodityId" resultMap="commodityPicMap">
+        select * from commodity_picture
+        where commodity_id = #{commodityId} and picture_type = 1
+        order by picture_sequence;
+    </select>
+
+    <insert id="insertPic" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="CommodityPicture">
+        insert into commodity_picture (commodity_id, picture_type, picture_sequence, picture_obj)
+        values (#{commodityID}, #{pictureType}, #{pictureSequence}, #{pictureObj})
+    </insert>
+</mapper>

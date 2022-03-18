@@ -1,5 +1,8 @@
 package com.tmall_backend.bysj.common;
 
+import com.tmall_backend.bysj.common.constants.ErrInfo;
+import com.tmall_backend.bysj.common.exception.BizException;
+
 import lombok.Data;
 
 /**
@@ -10,8 +13,8 @@ import lombok.Data;
 public class ReturnObject {
     Boolean success;
     Object result;
-    String message;
     Integer code;
+    String message;
 
     public ReturnObject() {
 
@@ -20,14 +23,27 @@ public class ReturnObject {
     public ReturnObject(Boolean success, Object result, Integer code) {
         this.success = success;
         this.result = result;
-        this.message = "";
         this.code = code;
     }
 
-    public ReturnObject(Boolean success, Object result, String message, Integer code) {
+    public ReturnObject(Boolean success, Object result, Integer code, String message) {
         this.success = success;
         this.result = result;
-        this.message = message;
         this.code = code;
+        this.message = message;
+    }
+
+    public ReturnObject(ErrInfo errInfo) {
+        this.success = false;
+        this.result = null;
+        this.code = errInfo.getCode();
+        this.message = errInfo.getMessage();
+    }
+
+    public ReturnObject(BizException e) {
+        this.success = false;
+        this.result = null;
+        this.code = e.getCode();
+        this.message = e.getMessage();
     }
 }

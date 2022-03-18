@@ -3,8 +3,8 @@ package com.tmall_backend.bysj.service.login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tmall_backend.bysj.exception.BizException;
-import com.tmall_backend.bysj.constants.ErrInfo;
+import com.tmall_backend.bysj.common.constants.ErrInfo;
+import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.mapper.CustomerMapper;
 
 /**

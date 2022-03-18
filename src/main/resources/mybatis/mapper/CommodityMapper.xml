@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.CommodityMapper">
+    <resultMap id="commodityMap" type="Commodity">
+        <id column="id" property="id"/>
+        <result column="commodity_name" property="name"/>
+        <result column="category_id" property="categoryID"/>
+        <result column="brand_id" property="brandID"/>
+        <result column="commodity_price" property="price"/>
+        <result column="other_prop" property="props"/>
+        <result column="status" property="status"/>
+        <result column="detail" property="detail"/>
+        <result column="inventory" property="inventory"/>
+    </resultMap>
+
+    <select id="queryCommodityById" resultMap="commodityMap">
+        select * from commodity where id = #{id}
+    </select>
+
+    <select id="queryCommodityByBrandIdByPage" resultMap="commodityMap">
+        select * from commodity where brand_id = #{brandId} limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryCommodityByBrandIdTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity where brand_id = #{brandId}
+    </select>
+
+    <select id="queryCommodityPropsById" resultType="java.lang.String">
+        select other_prop from commodity where id = #{id}
+    </select>
+
+    <select id="queryCommodityListByStatusByPage" resultMap="commodityMap">
+        select * from commodity where status = #{status} limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryCommodityListByStatusTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity where status = #{status}
+    </select>
+
+    <select id="queryCommodityByCategoryId" resultMap="commodityMap" parameterType="list">
+        select * from commodity where category_id in
+        <foreach collection="list" item="categories" open="(" separator="," close=")">
+            #{categories}
+        </foreach>
+    </select>
+    <select id="batchQueryCommodityByCategoryIdByPage" resultMap="commodityMap" parameterType="list">
+        select * from commodity where category_id in 
+        <foreach collection="list" item="categories" open="(" separator="," close=")">
+            #{categories}
+        </foreach>
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="batchQueryCommodityByCategoryIdTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity where category_id in
+        <foreach collection="list" item="categories" open="(" separator="," close=")">
+            #{categories}
+        </foreach>
+    </select>
+
+    <select id="queryCommodityByCategoryIdAndBrandIdByPage" resultMap="commodityMap" parameterType="list">
+        select * from commodity where category_id in
+            <foreach collection="list" item="categories" open="(" separator="," close=")">
+                #{categories}
+            </foreach>
+        and brand_id = #{branchId} limit #{offset}, #{pageSize};
+    </select>
+    <select id="queryCommodityByCategoryIdAndBrandIdTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity where category_id in
+        <foreach collection="list" item="categories" open="(" separator="," close=")">
+            #{categories}
+        </foreach>
+        and brand_id = #{branchId};
+    </select>
+
+    <select id="queryAllByPage" resultMap="commodityMap">
+        select * from commodity limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryAllTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity
+    </select>
+
+    <insert id="insertCommodity" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Commodity">
+        insert into commodity (commodity_name, category_id, brand_id, commodity_price, other_prop, detail)
+        values (#{name}, #{categoryID}, #{brandID}, #{price}, #{props}, #{detail})
+    </insert>
+
+    <update id="updateCommodityProperties">
+        update commodity set other_prop=#{props} where id=#{id}
+    </update>
+
+    <update id="updateCommodityStatus">
+        update commodity set status=#{status} where id=#{id}
+    </update>
+
+    <update id="updateCommodityPrice">
+        update commodity set commodity_price=#{newPrice} where id=#{id}
+    </update>
+
+    <update id="increaseOrDecreaseInventory">
+        update commodity
+        set inventory =
+                    (
+                        select a.inventory from
+                                (select * from commodity where id = #{id}) a
+                    ) + (#{stockNum})
+        where id = #{id}
+    </update>
+</mapper>

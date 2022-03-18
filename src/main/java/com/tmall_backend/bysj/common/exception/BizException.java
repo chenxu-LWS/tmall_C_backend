@@ -1,6 +1,6 @@
-package com.tmall_backend.bysj.exception;
+package com.tmall_backend.bysj.common.exception;
 
-import com.tmall_backend.bysj.constants.ErrInfo;
+import com.tmall_backend.bysj.common.constants.ErrInfo;
 
 import lombok.Getter;
 import lombok.Setter;

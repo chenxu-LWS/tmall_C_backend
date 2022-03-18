@@ -1,4 +1,4 @@
-package com.tmall_backend.bysj.filter;
+package com.tmall_backend.bysj.common.filter;
 
 
 import java.io.IOException;
@@ -13,6 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * @author LiuWenshuo
@@ -20,18 +22,20 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebFilter(urlPatterns = {"/*"})
 public class LoginFilter implements Filter {
+    Logger logger = Logger.getLogger(LoginFilter.class);
 
-    private static final String SESSION_KEY = "current_customer_session";
-    private static final String COOKIE_KEY = "current_customer_cookie";
+    private static final String SESSION_KEY = "current_user_session";
+    private static final String COOKIE_KEY = "current_user_cookie";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Doing Filter");
+        logger.info("Doing Filter");
         HttpServletRequest req = (HttpServletRequest) request;
         if (req.getSession().getAttribute(SESSION_KEY) != null) {
             chain.doFilter(request, response);
-        } else if (req.getRequestURI().contains("login") || req.getRequestURI().contains("register")) {
+        } else if (req.getRequestURI().contains("login") || req.getRequestURI().contains("register")
+        || req.getRequestURI().contains("isLogin")) {
             chain.doFilter(request, response);
         } else {
             boolean isLogin = false;

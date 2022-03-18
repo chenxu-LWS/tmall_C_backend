@@ -12,14 +12,14 @@
     </select>
 
     <select id="queryCustomerByName" resultType="Customer">
-        select * from customer where cust_name = #{name} limit 1
+        select * from customer where customer_name = #{name} limit 1
     </select>
 
     <select id="queryCustomerByNameAndPass" resultType="Customer">
-        select * from customer where cust_name = #{name} and password = #{password}
+        select * from customer where customer_name = #{name} and customer_passwd = #{password}
     </select>
 
     <insert id="insertCustomer">
-        insert into customer (id, cust_name, password) values (null, #{name}, #{password})
+        insert into customer (id, customer_name, customer_passwd) values (null, #{name}, #{password})
     </insert>
 </mapper>

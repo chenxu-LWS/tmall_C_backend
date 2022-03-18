@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.BackOrderInfoMapper">
+    <resultMap id="backOrderInfoMap" type="BackOrderInfo">
+        <id column="id" property="id"/>
+        <result column="orderinfo_id" property="orderInfoId"/>
+        <result column="commodity_id" property="commodityId"/>
+        <result column="commodity_back_num" property="backNum"/>
+        <result column="back_price" property="price"/>
+        <result column="back_order_time" property="backOrderTime"/>
+    </resultMap>
+
+    <select id="queryBackOrderInfoById" resultMap="backOrderInfoMap">
+        select * from backorderinfo where id = #{id}
+    </select>
+
+    <insert id="insertBackOrderInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="OrderInfo">
+        insert into
+            backorderinfo (orderinfo_id, commodity_id, commodity_back_num, back_price, back_order_time)
+        values
+            (#{orderInfoId}, #{commodityId}, #{backNum}, #{price}, current_timestamp())
+    </insert>
+</mapper>

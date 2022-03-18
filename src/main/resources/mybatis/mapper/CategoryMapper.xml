@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.CategoryMapper">
+    <resultMap id="categoryMap" type="Category">
+        <id column="id" property="id"/>
+        <result column="category_name" property="name"/>
+        <result column="parent_category_id" property="parentCategoryID"/>
+        <result column="category_level" property="level"/>
+        <result column="commodity_num" property="commodityNum"/>
+    </resultMap>
+    <select id="queryCategoryById" resultMap="categoryMap">
+        select * from category where id=#{id}
+    </select>
+
+    <select id="querySubCategoryById" resultMap="categoryMap">
+        select * from category where parent_category_ID=#{id}
+    </select>
+
+    <select id="queryParentCategoryById" resultMap="categoryMap">
+        select * from category where id=(select parent_category_ID from category where id = #{id})
+    </select>
+
+    <select id="queryAllCategory" resultMap="categoryMap">
+        select * from category
+    </select>
+
+    <select id="queryDeepestLevel" resultType="java.lang.Integer">
+        select max(category_level) from category
+    </select>
+
+    <insert id="insertCategory" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Category">
+        insert into
+            category (id, category_name, parent_category_ID, category_level, commodity_num)
+            values (null, #{name}, #{parentId}, #{level}, 0)
+    </insert>
+
+    <insert id="deleteCategory">
+        delete from category where id=#{id}
+    </insert>
+
+    <update id="increaseOrDecreaseCategoryCommodityNum">
+        update category
+        set commodity_num =
+            (
+                select a.commodity_num from
+                (select * from category where id = #{id}) a
+        ) + (#{num})
+        where id = #{id}
+    </update>
+
+    <select id="queryCategoryByLevel" resultMap="categoryMap">
+        select * from category where category_level = #{level}
+    </select>
+</mapper>

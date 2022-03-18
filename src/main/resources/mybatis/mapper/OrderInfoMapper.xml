@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.OrderInfoMapper">
+    <resultMap id="orderInfoMap" type="OrderInfo">
+        <id column="id" property="id"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="detail" property="detail"/>
+        <result column="order_price" property="orderPrice"/>
+        <result column="order_time" property="orderTime"/>
+    </resultMap>
+
+    <select id="queryOrderInfoById" resultMap="orderInfoMap">
+        select * from orderinfo where id = #{id}
+    </select>
+
+    <select id="queryOrderInfoByCustomerNameByPage" resultMap="orderInfoMap">
+        select * from orderinfo where customer_name = #{customerName} limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryOrderInfoByCustomerNameTotalNum" resultType="java.lang.Integer">
+        select count(*) from orderinfo where customer_name = #{customerName}
+    </select>
+
+    <insert id="insertOrderInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="OrderInfo">
+        insert into
+            orderinfo (customer_name, detail, order_price, order_time)
+        values
+            (#{customerName}, #{detail}, #{orderPrice}, current_timestamp())
+    </insert>
+
+    <update id="updateCommodityStatusInOrderInfo">
+        update orderinfo
+        set detail = #{detail}
+        where id = #{id}
+    </update>
+</mapper>
