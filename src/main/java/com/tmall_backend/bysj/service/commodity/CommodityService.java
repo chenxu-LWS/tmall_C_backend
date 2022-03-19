@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.common.page.PageBean;
+import com.tmall_backend.bysj.entity.Brand;
 import com.tmall_backend.bysj.entity.Category;
 import com.tmall_backend.bysj.entity.Commodity;
 import com.tmall_backend.bysj.mapper.BrandMapper;
@@ -80,6 +81,69 @@ public class CommodityService {
         } catch (Exception e) {
             throw new BizException(ErrInfo.COMMODITY_PROP_FORMAT_ERROR);
         }
+    }
+
+    public List<Brand> queryBrandsByCategoryId(Integer categoryId) {
+        // 参数校验
+        if (categoryMapper.queryCategoryById(categoryId) == null) {
+            throw new BizException(ErrInfo.CATEGORY_ID_NOT_EXISTS);
+        }
+        // 先查询有没有子类别,放到一个list里，层序遍历图
+        List<Integer> categories = new ArrayList<>();
+        Queue<Integer> temp = new LinkedBlockingDeque<>();
+        temp.add(categoryId);
+        while (!temp.isEmpty()) {
+            final Integer curr = temp.remove();
+            categories.add(curr);
+            final List<Category> subs = categoryMapper.querySubCategoryById(curr);
+            for (Category sub : subs) {
+                temp.add(sub.getId());
+            }
+        }
+        // 从品类下的所有商品筛选出其包含的品牌
+        final List<Commodity> commodities = commodityMapper.queryCommodityByCategoryId(categories);
+        final List<Brand> brands = brandMapper.queryAllBrand();
+        Map<Integer, Brand> brandMap = new HashMap<>();
+        for (Brand brand : brands) {
+            brandMap.put(brand.getId(), brand);
+        }
+        Set<Brand> result = new HashSet<>();
+        for (Commodity commodity : commodities) {
+            result.add(brandMap.get(commodity.getBrandID()));
+        }
+        return new ArrayList<>(result);
+    }
+
+    public PageBean<CommodityDTO> queryCommodityByConditionByPage(Integer categoryId, Integer brandId, String propK,
+            String propV, Double priceLow, Double priceHigh, String sortedBy, Boolean sortDesc, Boolean onlyOnSale,
+            Integer pageNo, Integer pageSize) throws BizException {
+        // 先查询有没有子类别,放到一个list里，层序遍历图
+        List<Integer> categories = new ArrayList<>();
+        if (categoryId != null) {
+            Queue<Integer> temp = new LinkedBlockingDeque<>();
+            temp.add(categoryId);
+            while (!temp.isEmpty()) {
+                final Integer curr = temp.remove();
+                categories.add(curr);
+                final List<Category> subs = categoryMapper.querySubCategoryById(curr);
+                for (Category sub : subs) {
+                    temp.add(sub.getId());
+                }
+            }
+        }
+        // 查询主逻辑
+        final List<Commodity> commodities = commodityMapper.queryCommodityByConditionByPage(categories,
+                brandId,
+                propK, propV, priceLow, priceHigh, sortedBy, sortDesc, onlyOnSale, pageNo * pageSize, pageSize);
+        System.out.println(commodities);
+        PageBean<CommodityDTO> result = new PageBean<>();
+        result.setPageNo(pageNo);
+        result.setPageSize(pageSize);
+        result.setList(getCommodityDTOList(new ArrayList<>(), commodities));
+        result.setTotalNum(commodityMapper.queryCommodityByConditionTotalNum(categories, brandId,
+                priceLow, priceHigh,
+                propK, propV, onlyOnSale));
+        return result;
     }
 
     /**

@@ -25,4 +25,5 @@ public class Commodity {
     private String detail;
     private Integer status;// 商品状态,已创建为(0)，已上架为1，已下架为2
     private Integer inventory;
+    private Integer saleVolume;
 }

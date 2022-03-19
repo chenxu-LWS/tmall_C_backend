@@ -13,7 +13,67 @@
         <result column="status" property="status"/>
         <result column="detail" property="detail"/>
         <result column="inventory" property="inventory"/>
+        <result column="sale_volume" property="saleVolume"/>
     </resultMap>
+
+
+    <select id="queryCommodityByConditionByPage" resultMap="commodityMap">
+        select * from commodity
+            where 1=1
+            <if test="list != null and list.size()!=0">
+                AND category_id in
+                <foreach collection="list" item="categories" open="(" separator="," close=")">
+                    #{categories}
+                </foreach>
+            </if>
+            <if test="brandId != null">
+                AND brand_id = #{brandId}
+            </if>
+            <if test="propK != null and propV != null">
+                AND JSON_CONTAINS(other_prop, '"${propV}"', '$."${propK}"')
+            </if>
+            <if test="priceLow != null">
+                AND commodity_price <![CDATA[ >= ]]> #{priceLow}
+            </if>
+            <if test="priceHigh != null">
+                AND commodity_price <![CDATA[ <= ]]> #{priceHigh}
+            </if>
+            <if test="onlyOnSale != null and onlyOnSale != false">
+                AND status = 1
+            </if>
+            <if test="sortedBy != null">
+                order by ${sortedBy}
+            </if>
+            <if test="sortedBy != null and sortDesc != null and sortDesc != false">
+                desc
+            </if>
+            limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryCommodityByConditionTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity
+        where 1=1
+        <if test="list != null and list.size()!=0">
+            AND category_id in
+            <foreach collection="list" item="categories" open="(" separator="," close=")">
+                #{categories}
+            </foreach>
+        </if>
+        <if test="brandId != null">
+            AND brand_id = #{brandId}
+        </if>
+        <if test="propK != null and propV != null">
+            AND JSON_CONTAINS(other_prop, '"${propV}"', '$."${propK}"')
+        </if>
+        <if test="onlyOnSale != null and onlyOnSale != false">
+            AND status = 1
+        </if>
+        <if test="priceLow != null">
+            AND commodity_price <![CDATA[ >= ]]> #{priceLow}
+        </if>
+        <if test="priceHigh != null">
+            AND commodity_price <![CDATA[ <= ]]> #{priceHigh}
+        </if>
+    </select>
 
     <select id="queryCommodityById" resultMap="commodityMap">
         select * from commodity where id = #{id}
