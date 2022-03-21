@@ -165,4 +165,14 @@
                     ) + (#{stockNum})
         where id = #{id}
     </update>
+
+    <update id="increaseOrDecreaseSaleVolume">
+        update commodity
+        set sale_volume =
+                    (
+                        select a.sale_volume from
+                                (select * from commodity where id = #{id}) a
+                    ) + (#{number})
+        where id = #{id}
+    </update>
 </mapper>

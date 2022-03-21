@@ -170,4 +170,37 @@ public class CommodityService {
         }
         return result;
     }
+
+    /**
+     * 根据ID查询商品基本信息
+     * @param id
+     * @return
+     */
+    public CommodityDTO queryById(Integer id) throws BizException {
+        final Commodity commodity = commodityMapper.queryCommodityById(id);
+        if (commodity == null) {
+            throw new BizException(ErrInfo.COMMODITY_ID_NOT_EXISTS);
+        }
+        CommodityDTO result = new CommodityDTO(commodity);
+        result.setCategory(categoryMapper.queryCategoryById(commodity.getCategoryID()));
+        result.setBrand(brandMapper.queryBrandById(commodity.getBrandID()));
+        return result;
+    }
+
+    /**
+     * 增加或减少商品库存
+     * @param id
+     * @param num
+     * @return
+     */
+    public Integer increaseOrDecreaseInventory(Integer id, Integer num) throws BizException{
+        final Commodity commodity = commodityMapper.queryCommodityById(id);
+        if (commodity == null) {
+            throw new BizException(ErrInfo.ORDERINFO_DETAIL_CONTAINS_COMM_NOT_EXISTS);
+        }
+        if (num <0 && Math.abs(num) > commodity.getInventory()) {
+            throw new BizException(ErrInfo.ORDERINFO_DETAIL_INVENTORY_INFINITY);
+        }
+        return commodityMapper.increaseOrDecreaseInventory(id, num);
+    }
 }

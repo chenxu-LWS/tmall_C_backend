@@ -17,7 +17,7 @@ import com.tmall_backend.bysj.entity.Customer;
 public interface CustomerMapper {
     public Customer queryCustomerById(String id);
     public List<Customer> queryCustomerList();
-    public Integer insertCustomer(@Param("name") String name, @Param("password") String password);
+    public Integer insertCustomer(Customer customer);
     public Customer queryCustomerByName(@Param("name") String name);
     public Customer queryCustomerByNameAndPass(@Param("name") String name, @Param("password") String password);
 }

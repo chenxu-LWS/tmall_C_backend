@@ -37,6 +37,16 @@ public enum ErrInfo {
     // 退货单相关
     BACKORDERINFO_ID_NOT_EXISTS(1016, "退货单ID不存在"),
 
+    // 购物车相关
+    GET_LOGIN_USER_ERROR(1017, "尚未登录，没有获取到用户名"),
+
+    // 行为相关
+    DECREASE_FROM_TROLLEY(1018, "购物车中不存在该商品，无法进行扣减"),
+    DELETE_FROM_TROLLEY(1019, "购物车中不存在该商品，无法删除"),
+    BUY_ERROR_INVENTORY_NOT_AVAILABLE(1020, "库存不足，下单失败"),
+    BUY_ERROR_COMMODITY_STATUS_NOT_ONSALE(1021, "商品不是上架状态，下单失败"),
+    RETURN_COM_ERROR_ALREADY_RETURN(1022, "商品已经退款了，不能重复退款"),
+
     // 通用错误码
     PARAMETER_ERROR(10000, "参数不合法"),
     PARAMETER_ERROR_CANNOT_CAST_TO_JSON(10001, "参数无法转换为json,请检查"),

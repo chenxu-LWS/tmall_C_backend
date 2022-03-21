@@ -1,16 +1,18 @@
 package com.tmall_backend.bysj.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author LiuWenshuo
  * Created on 2022-02-01
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
-    private String id;
+    private Integer id;
     private String name;
     private String password;
 }

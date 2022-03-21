@@ -19,7 +19,7 @@
         select * from customer where customer_name = #{name} and customer_passwd = #{password}
     </select>
 
-    <insert id="insertCustomer">
+    <insert id="insertCustomer" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Customer">
         insert into customer (id, customer_name, customer_passwd) values (null, #{name}, #{password})
     </insert>
 </mapper>

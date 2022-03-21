@@ -41,4 +41,5 @@ public interface CommodityMapper {
     public Integer updateCommodityStatus(@Param("id") Integer id, @Param("status") Integer status);
     public Integer updateCommodityPrice(@Param("id") Integer id, @Param("newPrice") Integer newPrice);
     public Integer increaseOrDecreaseInventory(@Param("id") Integer id, @Param("stockNum") Integer stockNum);
+    public Integer increaseOrDecreaseSaleVolume(@Param("id") Integer id, @Param("number") Integer number);
 }

@@ -1,6 +1,9 @@
 package com.tmall_backend.bysj.common.filter;
 
 
+import static com.tmall_backend.bysj.common.constants.Constants.COOKIE_KEY;
+import static com.tmall_backend.bysj.common.constants.Constants.SESSION_KEY;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -24,9 +27,6 @@ import org.apache.log4j.Logger;
 public class LoginFilter implements Filter {
     Logger logger = Logger.getLogger(LoginFilter.class);
 
-    private static final String SESSION_KEY = "current_user_session";
-    private static final String COOKIE_KEY = "current_user_cookie";
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -35,7 +35,7 @@ public class LoginFilter implements Filter {
         if (req.getSession().getAttribute(SESSION_KEY) != null) {
             chain.doFilter(request, response);
         } else if (req.getRequestURI().contains("login") || req.getRequestURI().contains("register")
-        || req.getRequestURI().contains("isLogin")) {
+        || req.getRequestURI().contains("isLogin") || req.getRequestURI().contains("/api/category")) {
             chain.doFilter(request, response);
         } else {
             boolean isLogin = false;
@@ -43,7 +43,7 @@ public class LoginFilter implements Filter {
             if(cs != null && cs.length > 0) {
                 for(Cookie c : cs) {
                     if(COOKIE_KEY.equals(c.getName())) {
-                        req.getSession().setAttribute("user", c.getValue());
+                        req.getSession().setAttribute(SESSION_KEY, c.getValue());
                         isLogin = true;
                         chain.doFilter(request, response);
                     }

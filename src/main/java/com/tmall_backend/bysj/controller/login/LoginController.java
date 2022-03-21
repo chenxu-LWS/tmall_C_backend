@@ -1,5 +1,8 @@
 package com.tmall_backend.bysj.controller.login;
 
+import static com.tmall_backend.bysj.common.constants.Constants.COOKIE_KEY;
+import static com.tmall_backend.bysj.common.constants.Constants.SESSION_KEY;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +20,7 @@ import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.controller.login.dto.CustomerDTO;
 import com.tmall_backend.bysj.controller.login.dto.IsLoginDTO;
+import com.tmall_backend.bysj.entity.Customer;
 import com.tmall_backend.bysj.service.login.LoginService;
 
 /**
@@ -29,8 +33,6 @@ public class LoginController {
     Logger logger = Logger.getLogger(LoginController.class);
 
     private static final Integer COOKIE_TIME_OUT = 24 * 60 * 60;
-    private static final String COOKIE_KEY = "current_user_cookie";
-    private static final String SESSION_KEY = "current_user_session";
 
 
     @Autowired
@@ -43,7 +45,7 @@ public class LoginController {
             return new ReturnObject(ErrInfo.PARAMETER_ERROR);
         }
         try {
-            Integer result = loginService.register(dto.getName(), dto.getPassword());
+            Integer result = loginService.register(new Customer(null, dto.getName(), dto.getPassword()));
             return new ReturnObject(true, result, 0);
         } catch (BizException e) {
             return new ReturnObject(e);
@@ -109,7 +111,7 @@ public class LoginController {
         if(cs != null && cs.length > 0) {
             for(Cookie c : cs) {
                 if(COOKIE_KEY.equals(c.getName())) {
-                    req.getSession().setAttribute("user", c.getValue());
+                    req.getSession().setAttribute(SESSION_KEY, c.getValue());
                     isLogin = true;
                 }
             }

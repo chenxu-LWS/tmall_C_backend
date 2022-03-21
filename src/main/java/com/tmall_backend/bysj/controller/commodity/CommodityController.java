@@ -71,4 +71,15 @@ public class CommodityController {
                         dto.getSortedBy(), dto.getSortDesc(), dto.getOnlyOnSale(), dto.getPageNo(), dto.getPageSize());
         return new ReturnPageObject<>(true, commodityDTOPageBean, 0);
     }
+
+    @RequestMapping("/queryById")
+    @ResponseBody
+    public ReturnObject queryById(Integer id) {
+        try {
+            final CommodityDTO dto = commodityService.queryById(id);
+            return new ReturnObject(true, dto, 0);
+        } catch (BizException e) {
+            return new ReturnObject(e);
+        }
+    }
 }

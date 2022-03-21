@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
+import com.tmall_backend.bysj.entity.Customer;
 import com.tmall_backend.bysj.mapper.CustomerMapper;
+import com.tmall_backend.bysj.mapper.TrolleyMapper;
 
 /**
  * @author LiuWenshuo
@@ -15,13 +17,17 @@ import com.tmall_backend.bysj.mapper.CustomerMapper;
 public class LoginService {
     @Autowired
     CustomerMapper customerMapper;
+    @Autowired
+    TrolleyMapper trolleyMapper;
 
-    public Integer register(String name, String password) {
+    public Integer register(Customer customer) {
         // 判断是否有重名的
-        if (customerMapper.queryCustomerByName(name) != null) {
+        if (customerMapper.queryCustomerByName(customer.getName()) != null) {
             throw new BizException(ErrInfo.REGISTER_ERR_NAME_EXISTS);
         }
-        return customerMapper.insertCustomer(name, password);
+        customerMapper.insertCustomer(customer);
+        trolleyMapper.insert(customer.getId());
+        return customer.getId();
     }
 
     public Integer login(String name, String password) {
