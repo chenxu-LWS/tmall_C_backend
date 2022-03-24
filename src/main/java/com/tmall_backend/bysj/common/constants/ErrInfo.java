@@ -11,6 +11,7 @@ public enum ErrInfo {
     // 登录相关
     LOGIN_ERR_NAME_NOT_EXISTS(1001, "用户名不存在或密码错误，请重试"),
     REGISTER_ERR_NAME_EXISTS(1002, "该用户名已被占用"),
+    OLD_PASSWD_ERROR(1003, "旧密码不正确"),
 
     // 品类相关
     PARENT_CATEGORY_NOT_EXISTS(1003, "父品类ID不存在"),

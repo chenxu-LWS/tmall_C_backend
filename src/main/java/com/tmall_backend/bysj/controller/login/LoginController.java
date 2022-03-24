@@ -20,6 +20,8 @@ import com.tmall_backend.bysj.common.ReturnObject;
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.controller.login.dto.ChangeIconDTO;
+import com.tmall_backend.bysj.controller.login.dto.ChangeInfoDTO;
+import com.tmall_backend.bysj.controller.login.dto.ChangePasswdDTO;
 import com.tmall_backend.bysj.controller.login.dto.CustomerDTO;
 import com.tmall_backend.bysj.controller.login.dto.IsLoginDTO;
 import com.tmall_backend.bysj.controller.login.dto.LoginDTO;
@@ -67,7 +69,7 @@ public class LoginController {
         }
         try {
             // 登陆
-            loginService.login(dto.getName(), dto.getPassword());
+            loginService.checkNameAndPasswd(dto.getName(), dto.getPassword());
             // 设置cookie
             Cookie cookie = new Cookie(COOKIE_KEY,dto.getName());
             cookie.setMaxAge(COOKIE_TIME_OUT);
@@ -184,6 +186,41 @@ public class LoginController {
         }
         try {
             final Integer result = loginService.changeIcon(req, dto.getNewIcon());
+            return new ReturnObject(true, result, 0);
+        } catch (BizException e) {
+            return new ReturnObject(e);
+        }
+    }
+    
+    @RequestMapping("/api/changeInfo")
+    @ResponseBody
+    public ReturnObject changeInfo(HttpServletRequest req, @RequestBody ChangeInfoDTO dto) {
+        try {
+            if (dto.getSex() == null && dto.getAge() == null) {
+                return new ReturnObject(ErrInfo.PARAMETER_ERROR);
+            }
+            final String custName = (String)req.getSession().getAttribute(SESSION_KEY);
+            final Integer result = loginService.changeInfo(custName, dto.getAge(), dto.getSex());
+            return new ReturnObject(true, result, 0);
+        } catch (BizException e) {
+            return new ReturnObject(e);
+        }
+    }
+
+    @RequestMapping("/api/changePasswd")
+    @ResponseBody
+    public ReturnObject changePasswd(HttpServletRequest req, @RequestBody ChangePasswdDTO dto) {
+        try {
+            if (dto.getNewPasswd() == null || dto.getOldPasswd() == null) {
+                return new ReturnObject(ErrInfo.PARAMETER_ERROR);
+            }
+            final String custName = (String)req.getSession().getAttribute(SESSION_KEY);
+            try {
+                loginService.checkNameAndPasswd(custName, dto.getOldPasswd());
+            }catch (BizException e) {
+                return new ReturnObject(ErrInfo.OLD_PASSWD_ERROR);
+            }
+            final Integer result = loginService.changePasswd(custName, dto.getNewPasswd());
             return new ReturnObject(true, result, 0);
         } catch (BizException e) {
             return new ReturnObject(e);

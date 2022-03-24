@@ -56,7 +56,7 @@ public class LoginService {
         return customer.getId();
     }
 
-    public Integer login(String name, String password) {
+    public Integer checkNameAndPasswd(String name, String password) {
         if (customerMapper.queryCustomerByNameAndPass(name, password) == null) {
             throw new BizException(ErrInfo.LOGIN_ERR_NAME_NOT_EXISTS);
         }
@@ -108,5 +108,13 @@ public class LoginService {
             logger.info("Error Message:" + ce.getMessage());
             throw new BizException(ErrInfo.OSS_ERROR);
         }
+    }
+
+    public Integer changeInfo(String custName, Integer age, Integer sex) {
+        return customerMapper.updateInfo(custName, age, sex);
+    }
+
+    public Integer changePasswd(String custName, String newPasswd) {
+        return customerMapper.updatePasswd(custName, newPasswd);
     }
 }

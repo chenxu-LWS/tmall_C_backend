@@ -18,6 +18,8 @@ public interface CustomerMapper {
     public Customer queryCustomerById(String id);
     public List<Customer> queryCustomerList();
     public Integer insertCustomer(Customer customer);
+    public Integer updateInfo(@Param("name") String name, @Param("age") Integer age, @Param("sex") Integer sex);
     public Customer queryCustomerByName(@Param("name") String name);
     public Customer queryCustomerByNameAndPass(@Param("name") String name, @Param("password") String password);
+    public Integer updatePasswd(@Param("name") String name, @Param("newPasswd") String newPasswd);
 }

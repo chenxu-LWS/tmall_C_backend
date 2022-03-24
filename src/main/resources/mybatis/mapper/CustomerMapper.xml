@@ -33,4 +33,21 @@
         insert into customer (id, customer_name, customer_passwd, customer_age, customer_sex, icon_obj)
         values (null, #{name}, #{password}, #{age}, #{sex}, #{icon})
     </insert>
+
+    <update id="updateInfo">
+        update customer
+            <set>
+                <if test="age != null">
+                    customer_age = #{age},
+                </if>
+                <if test="sex != null">
+                    customer_sex = #{sex},
+                </if>
+            </set>
+        where customer_name = #{name}
+    </update>
+
+    <update id="updatePasswd">
+        update customer set customer_passwd = #{newPasswd} where customer_name = #{name}
+    </update>
 </mapper>
