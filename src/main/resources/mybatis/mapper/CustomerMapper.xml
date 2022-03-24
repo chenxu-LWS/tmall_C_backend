@@ -3,23 +3,34 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tmall_backend.bysj.mapper.CustomerMapper">
-    <select id="queryCustomerById" resultType="Customer">
+
+    <resultMap id="customerMap" type="Customer">
+        <id property="id" column="id"/>
+        <result column="customer_name" property="name"/>
+        <result column="customer_passwd" property="password"/>
+        <result column="customer_age" property="age"/>
+        <result column="customer_sex" property="sex"/>
+        <result column="icon_obj" property="icon"/>
+    </resultMap>
+
+    <select id="queryCustomerById" resultMap="customerMap">
         select * from customer where id=#{id}
     </select>
 
-    <select id="queryCustomerList" resultType="Customer">
+    <select id="queryCustomerList" resultMap="customerMap">
         select * from customer
     </select>
 
-    <select id="queryCustomerByName" resultType="Customer">
+    <select id="queryCustomerByName" resultMap="customerMap">
         select * from customer where customer_name = #{name} limit 1
     </select>
 
-    <select id="queryCustomerByNameAndPass" resultType="Customer">
+    <select id="queryCustomerByNameAndPass" resultMap="customerMap">
         select * from customer where customer_name = #{name} and customer_passwd = #{password}
     </select>
 
     <insert id="insertCustomer" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Customer">
-        insert into customer (id, customer_name, customer_passwd) values (null, #{name}, #{password})
+        insert into customer (id, customer_name, customer_passwd, customer_age, customer_sex, icon_obj)
+        values (null, #{name}, #{password}, #{age}, #{sex}, #{icon})
     </insert>
 </mapper>

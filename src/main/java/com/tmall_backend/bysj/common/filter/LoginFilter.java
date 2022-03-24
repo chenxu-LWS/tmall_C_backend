@@ -35,7 +35,8 @@ public class LoginFilter implements Filter {
         if (req.getSession().getAttribute(SESSION_KEY) != null) {
             chain.doFilter(request, response);
         } else if (req.getRequestURI().contains("login") || req.getRequestURI().contains("register")
-        || req.getRequestURI().contains("isLogin") || req.getRequestURI().contains("/api/category")) {
+        || req.getRequestURI().contains("isLogin") || req.getRequestURI().contains("/api/category")
+        || req.getRequestURI().contains("getCurrentLoginCustomer")) {
             chain.doFilter(request, response);
         } else {
             boolean isLogin = false;
