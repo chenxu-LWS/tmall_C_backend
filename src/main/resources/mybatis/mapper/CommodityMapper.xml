@@ -38,6 +38,9 @@
             <if test="priceHigh != null">
                 AND commodity_price <![CDATA[ <= ]]> #{priceHigh}
             </if>
+            <if test="ambiName != null">
+                AND commodity_name like '%${ambiName}%'
+            </if>
             <if test="onlyOnSale != null and onlyOnSale != false">
                 AND status = 1
             </if>
@@ -66,6 +69,9 @@
         </if>
         <if test="onlyOnSale != null and onlyOnSale != false">
             AND status = 1
+        </if>
+        <if test="ambiName != null">
+            AND commodity_name like '%${ambiName}%'
         </if>
         <if test="priceLow != null">
             AND commodity_price <![CDATA[ >= ]]> #{priceLow}
@@ -137,6 +143,13 @@
     </select>
     <select id="queryAllTotalNum" resultType="java.lang.Integer">
         select count(*) from commodity
+    </select>
+
+    <select id="ambiQueryCommodityByPage" resultMap="commodityMap">
+        select * from commodity where commodity_name like '%${ambiName}%' limit #{offset}, #{pageSize}
+    </select>
+    <select id="ambiQueryCommodityTotalNum" resultType="java.lang.Integer">
+        select count(*) from commodity where commodity_name like '%${ambiName}%'
     </select>
 
     <insert id="insertCommodity" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Commodity">

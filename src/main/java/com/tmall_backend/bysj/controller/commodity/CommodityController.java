@@ -19,6 +19,7 @@ import com.tmall_backend.bysj.common.ReturnPageObject;
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.common.page.PageBean;
+import com.tmall_backend.bysj.controller.commodity.dto.AmbiQueryByNameByPageDTO;
 import com.tmall_backend.bysj.controller.commodity.dto.QueryCommodityByConditionDTO;
 import com.tmall_backend.bysj.entity.Brand;
 import com.tmall_backend.bysj.service.commodity.CommodityService;
@@ -66,7 +67,7 @@ public class CommodityController {
     @ResponseBody
     public ReturnPageObject<CommodityDTO> queryCommodityByConditionByPage(@RequestBody QueryCommodityByConditionDTO dto) {
         final PageBean<CommodityDTO> commodityDTOPageBean = commodityService
-                .queryCommodityByConditionByPage(dto.getCategoryId(), dto.getBrandId(),
+                .queryCommodityByConditionByPage(dto.getAmbiName(), dto.getCategoryId(), dto.getBrandId(),
                         dto.getPropK(), dto.getPropV(), dto.getPriceLow(), dto.getPriceHigh(),
                         dto.getSortedBy(), dto.getSortDesc(), dto.getOnlyOnSale(), dto.getPageNo(), dto.getPageSize());
         return new ReturnPageObject<>(true, commodityDTOPageBean, 0);
@@ -80,6 +81,21 @@ public class CommodityController {
             return new ReturnObject(true, dto, 0);
         } catch (BizException e) {
             return new ReturnObject(e);
+        }
+    }
+
+    @RequestMapping("/ambiQueryByNameByPage")
+    @ResponseBody
+    public ReturnPageObject<CommodityDTO> ambiQueryByName(@RequestBody AmbiQueryByNameByPageDTO dto) {
+        if (dto.hasNull() || dto.getAmbiName() == null) {
+            return new ReturnPageObject<>(ErrInfo.PARAMETER_ERROR);
+        }
+        try {
+            final PageBean<CommodityDTO> commodityDTOPageBean =
+                    commodityService.ambiQueryCommodity(dto.getAmbiName(), dto.getPageNo(), dto.getPageSize());
+            return new ReturnPageObject<>(true, commodityDTOPageBean, 0);
+        } catch (BizException e) {
+            return new ReturnPageObject<>(e);
         }
     }
 }

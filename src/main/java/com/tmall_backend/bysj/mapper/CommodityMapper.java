@@ -16,13 +16,15 @@ import com.tmall_backend.bysj.entity.Commodity;
 @Mapper
 @Component
 public interface CommodityMapper {
-    public List<Commodity> queryCommodityByConditionByPage(@Param("list") List<Integer> categories, @Param("brandId") Integer brandId,
+    public List<Commodity> queryCommodityByConditionByPage(@Param("ambiName") String ambiName,
+            @Param("list") List<Integer> categories, @Param("brandId") Integer brandId,
             @Param("propK") String propK, @Param("propV") String propV,
             @Param("priceLow") Double priceLow, @Param("priceHigh") Double priceHigh,
             @Param("sortedBy") String sortedBy, @Param("sortDesc") Boolean sortDesc, @Param("onlyOnSale") Boolean onlyOnSale,
             @Param("offset") Integer offset,
             @Param("pageSize") Integer pageSize);
-    public Integer queryCommodityByConditionTotalNum(@Param("list") List<Integer> categories, @Param("brandId") Integer brandId,
+    public Integer queryCommodityByConditionTotalNum(@Param("ambiName") String ambiName,
+            @Param("list") List<Integer> categories, @Param("brandId") Integer brandId,
             @Param("priceLow") Double priceLow, @Param("priceHigh") Double priceHigh,
             @Param("propK") String propK, @Param("propV") String propV, @Param("onlyOnSale") Boolean onlyOnSale);
 
@@ -36,6 +38,10 @@ public interface CommodityMapper {
     // 查询所有
     public List<Commodity> queryAllByPage(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     public Integer queryAllTotalNum();
+
+    public List<Commodity> ambiQueryCommodityByPage(@Param("ambiName") String ambiName,
+            @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+    public Integer ambiQueryCommodityTotalNum(@Param("ambiName") String ambiName);
 
     public Integer updateCommodityProperties(@Param("id") Integer id, @Param("props") String props);
     public Integer updateCommodityStatus(@Param("id") Integer id, @Param("status") Integer status);

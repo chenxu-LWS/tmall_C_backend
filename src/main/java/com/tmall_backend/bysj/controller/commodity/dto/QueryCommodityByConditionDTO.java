@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QueryCommodityByConditionDTO extends PageBaseDTO {
+    // 搜索
+    private String ambiName;
     // 筛选条件
     private Integer categoryId;
     private Integer brandId;
