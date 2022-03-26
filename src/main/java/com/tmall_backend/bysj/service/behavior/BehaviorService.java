@@ -135,9 +135,10 @@ public class BehaviorService {
         }
         // 校验
         //"detail":"{"5":{"number":1,"price":109.9},"6":{"number":2,"price":109.9}}"
-        detail.forEach((k, v) -> {
+        List<Integer> commodityBoughtList = new ArrayList<>();
+        detail.forEach((commodityId, v) -> {
             try {
-                Integer.parseInt(k);
+                Integer.parseInt(commodityId);
             } catch (Exception e) {
                 throw new BizException(ErrInfo.ORDERINFO_DETAIL_FORMAT_ERROR);
             }
@@ -145,7 +146,7 @@ public class BehaviorService {
             if(objV.size() != 2 || !objV.containsKey("number") || !objV.containsKey("price")) {
                 throw new BizException(ErrInfo.ORDERINFO_DETAIL_FORMAT_ERROR);
             }
-            final Commodity commodity = commodityMapper.queryCommodityById(Integer.parseInt(k));
+            final Commodity commodity = commodityMapper.queryCommodityById(Integer.parseInt(commodityId));
             if (commodity == null) {
                 throw new BizException(ErrInfo.COMMODITY_ID_NOT_EXISTS);
             }
@@ -157,14 +158,28 @@ public class BehaviorService {
             }
             // 默认状态为进行中(1)
             objV.put("status", 1);
-            detail.put(k, objV);
+            detail.put(commodityId, objV);
+            commodityBoughtList.add(Integer.parseInt(commodityId));
             // 库存扣减
-            commodityMapper.increaseOrDecreaseInventory(Integer.parseInt(k), - (Integer) objV.get("number"));
+            commodityMapper.increaseOrDecreaseInventory(Integer.parseInt(commodityId), - (Integer) objV.get("number"));
             // 销量增加
-            commodityMapper.increaseOrDecreaseSaleVolume(Integer.parseInt(k), (Integer) objV.get("number"));
+            commodityMapper.increaseOrDecreaseSaleVolume(Integer.parseInt(commodityId), (Integer) objV.get("number"));
         });
         // 新增订单
-        return orderInfoService.insertOrderInfo((String) userName, JSON.toJSONString(detail), orderPrice);
+        orderInfoService.insertOrderInfo((String) userName, JSON.toJSONString(detail), orderPrice);
+        // 购物车商品删除
+        final Trolley trolley = trolleyMapper.queryTrolleyByCustomerName((String) userName);
+        final String oldTrolleyDetail = trolley.getCommodityDetail();
+        final List<Object> details = JSON.parseArray(oldTrolleyDetail);
+        Iterator<Object> iterator = details.listIterator();
+        while (iterator.hasNext()) {
+            Map<String, Integer> current = (Map<String, Integer>)iterator.next();
+            if (commodityBoughtList.contains(current.get("id"))) {
+                iterator.remove();
+            }
+        }
+        trolleyMapper.resetCommodityDetail(trolley.getCustomerId(), JSON.toJSONString(details));
+        return 0;
     }
 
     /**
