@@ -53,7 +53,7 @@ public class BehaviorController {
     @ResponseBody
     @Transactional(rollbackFor=Exception.class)
     public ReturnObject deleteCommodityFromTrolley(HttpServletRequest req, @RequestBody UpdateCommodityToTrolleyDTO dto) {
-        if (dto.getCommodityId() == null || dto.getNumber() == null) {
+        if (dto.getCommodityId() == null) {
             return new ReturnObject(ErrInfo.PARAMETER_ERROR);
         }
         try {
