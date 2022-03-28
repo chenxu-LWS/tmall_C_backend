@@ -48,6 +48,11 @@ public enum ErrInfo {
     BUY_ERROR_COMMODITY_STATUS_NOT_ONSALE(1021, "商品不是上架状态，下单失败"),
     RETURN_COM_ERROR_ALREADY_RETURN(1022, "商品已经退款了，不能重复退款"),
 
+    // 活动相关
+    DSL_SYNTAX_ERROR(1019, "活动创建语句语法有误"),
+    CURRENT_ACTIVITY_NOT_AVAILABLE(1020, "当前活动不满足参加条件"),
+
+
     // 通用错误码
     PARAMETER_ERROR(10000, "参数不合法"),
     PARAMETER_ERROR_CANNOT_CAST_TO_JSON(10001, "参数无法转换为json,请检查"),

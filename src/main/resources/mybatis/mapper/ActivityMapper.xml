@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.ActivityMapper">
+    <resultMap id="activityMap" type="Activity">
+        <id column="id" property="id"/>
+        <result column="ac_type" property="type"/>
+        <result column="ac_name" property="activityName"/>
+        <result column="ac_dsl" property="DSL"/>
+        <result column="ac_start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="ac_end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="online"/>
+    </resultMap>
+
+    <select id="queryActivityById" resultMap="activityMap">
+        select * from activity where id = #{id}
+    </select>
+
+    <select id="queryAllActivityByPage" resultMap="activityMap">
+        select * from activity order by id desc limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryAllActivityTotalNum" resultType="java.lang.Integer">
+        select count(*) from activity;
+    </select>
+
+    <select id="queryOnlineActivityByPage" resultMap="activityMap">
+        select * from activity where status = 1 order by id desc limit #{offset}, #{pageSize}
+    </select>
+    <select id="queryOnlineActivityTotalNum" resultType="java.lang.Integer">
+        select count(*) from activity where status = 1
+    </select>
+
+    <insert id="insertActivity" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Activity">
+        insert into
+            activity(id, ac_type, ac_name, ac_dsl, ac_start_time, ac_end_time, status)
+            values
+            (null, #{type}, #{activityName}, #{DSL}, #{startTime}, #{endTime}, 0)
+    </insert>
+
+    <update id="updateActivityStatus">
+        update activity set status = #{status} where id = #{id}
+    </update>
+</mapper>

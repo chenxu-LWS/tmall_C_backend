@@ -79,7 +79,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.75</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.9.3</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -139,6 +143,34 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.9.3</version>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <!--指定导入语法和标记文件的位置。-->
+                    <libDirectory>src/main/antlr4/imports</libDirectory>
+                    <!--ANTLR语法文件(*.g4)所在的目录。-->
+                    <sourceDirectory>src/main/antlr4</sourceDirectory>
+                    <!--指定生成Java文件的输出目录。-->
+                    <outputDirectory>src/main/java</outputDirectory>
+                    <!--生成解析树侦听器接口和基类。-->
+                    <listener>true</listener>
+                    <!--生成解析树访问者接口和基类。-->
+                    <visitor>true</visitor>
+                    <treatWarningsAsErrors>true</treatWarningsAsErrors>
+                </configuration>
             </plugin>
         </plugins>
     </build>

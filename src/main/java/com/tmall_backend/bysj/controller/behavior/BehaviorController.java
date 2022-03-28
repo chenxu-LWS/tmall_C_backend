@@ -1,5 +1,7 @@
 package com.tmall_backend.bysj.controller.behavior;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,13 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.tmall_backend.bysj.common.ReturnListObject;
 import com.tmall_backend.bysj.common.ReturnObject;
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.common.exception.BizException;
+import com.tmall_backend.bysj.controller.behavior.dto.QueryByCommodityMapDTO;
 import com.tmall_backend.bysj.controller.behavior.dto.BuyDTO;
 import com.tmall_backend.bysj.controller.behavior.dto.EnsureOrderDTO;
+import com.tmall_backend.bysj.controller.behavior.dto.GetRealPriceFromOrderDTO;
 import com.tmall_backend.bysj.controller.behavior.dto.UpdateCommodityToTrolleyDTO;
+import com.tmall_backend.bysj.service.activity.dto.ActivityDTO;
 import com.tmall_backend.bysj.service.behavior.BehaviorService;
+import com.tmall_backend.bysj.service.behavior.dto.RealPriceFromOrderDTO;
 
 /**
  * @author LiuWenshuo
@@ -75,6 +82,40 @@ public class BehaviorController {
             final Map<String, Object> detail = JSON.parseObject(dto.getDetail());
             final Integer newOrderInfoId = behaviorService.buy(req, detail, dto.getOrderPrice());
             return new ReturnObject(true, newOrderInfoId, 0);
+        } catch (BizException e) {
+            return new ReturnObject(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ReturnObject(ErrInfo.PARAMETER_ERROR);
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/getActivitiesFromOrder")
+    public ReturnListObject getActivitiesFromOrder(@RequestBody QueryByCommodityMapDTO dto) {
+        if (dto.getDetail() == null){
+            return new ReturnListObject(ErrInfo.PARAMETER_ERROR);
+        }
+        try {
+            final Map<String, Object> detail = JSON.parseObject(dto.getDetail());
+            final List<ActivityDTO> activitiesFromOrder = behaviorService.getActivitiesFromOrder(detail);
+            return new ReturnListObject(true, new ArrayList<>(activitiesFromOrder), 0);
+        } catch (BizException e) {
+            return new ReturnListObject(e);
+        }
+    }
+
+    @PostMapping("/getRealPriceFromOrder")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnObject getRealPriceFromOrder(@RequestBody GetRealPriceFromOrderDTO dto) {
+        if (dto.getDetail() == null || dto.getActivityId() == null) {
+            return new ReturnObject(ErrInfo.PARAMETER_ERROR);
+        }
+        try {
+            final Map<String, Object> detail = JSON.parseObject(dto.getDetail());
+            final RealPriceFromOrderDTO realPriceFromOrder = behaviorService.getRealPriceFromOrder(detail, dto.getActivityId());
+            return new ReturnObject(true, realPriceFromOrder, 0);
         } catch (BizException e) {
             return new ReturnObject(e);
         } catch (Exception e) {
