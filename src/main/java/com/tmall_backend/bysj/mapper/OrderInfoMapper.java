@@ -17,7 +17,7 @@ import com.tmall_backend.bysj.entity.OrderInfo;
 @Component
 public interface OrderInfoMapper {
     public OrderInfo queryOrderInfoById(Integer id);
-    public List<OrderInfo> queryOrderInfoByPage(
+    public List<OrderInfo> queryOrderInfoByCustomerNameByPage(
             @Param("customerName") String customerName,
             @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     public Integer queryOrderInfoByCustomerNameTotalNum(String customerName);

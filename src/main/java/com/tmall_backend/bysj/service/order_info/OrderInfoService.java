@@ -34,7 +34,7 @@ public class OrderInfoService {
 
     public PageBean<OrderInfoDTO> queryOrderInfoByCustomerNameByPage(String customerName, Integer pageNo, Integer pageSize) {
         final List<OrderInfo> orderInfos =
-                orderInfoMapper.queryOrderInfoByPage(customerName, pageNo * pageSize, pageSize);
+                orderInfoMapper.queryOrderInfoByCustomerNameByPage(customerName, pageNo * pageSize, pageSize);
         List<OrderInfoDTO> dtos = new ArrayList<>();
         orderInfos.forEach(orderInfo -> dtos.add(new OrderInfoDTO(orderInfo)));
         PageBean<OrderInfoDTO> result = new PageBean<>();
