@@ -177,7 +177,7 @@ public class BehaviorService {
             commodityMapper.increaseOrDecreaseSaleVolume(Integer.parseInt(commodityId), (Integer) objV.get("number"));
         });
         // 新增订单
-        orderInfoService.insertOrderInfo((String) userName, JSON.toJSONString(detail), orderPrice);
+        Integer newOrderInfoId = orderInfoService.insertOrderInfo((String) userName, JSON.toJSONString(detail), orderPrice);
         // 购物车商品删除
         final Trolley trolley = trolleyMapper.queryTrolleyByCustomerName((String) userName);
         final String oldTrolleyDetail = trolley.getCommodityDetail();
@@ -190,7 +190,7 @@ public class BehaviorService {
             }
         }
         trolleyMapper.resetCommodityDetail(trolley.getCustomerId(), JSON.toJSONString(details));
-        return 0;
+        return newOrderInfoId;
     }
 
     /**
