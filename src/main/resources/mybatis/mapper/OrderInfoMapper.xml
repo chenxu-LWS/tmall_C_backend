@@ -16,7 +16,7 @@
     </select>
 
     <select id="queryOrderInfoByCustomerNameByPage" resultMap="orderInfoMap">
-        select * from orderinfo where customer_name = #{customerName} order by id limit #{offset}, #{pageSize}
+        select * from orderinfo where customer_name = #{customerName} order by id desc limit #{offset}, #{pageSize}
     </select>
     <select id="queryOrderInfoByCustomerNameTotalNum" resultType="java.lang.Integer">
         select count(*) from orderinfo where customer_name = #{customerName}
