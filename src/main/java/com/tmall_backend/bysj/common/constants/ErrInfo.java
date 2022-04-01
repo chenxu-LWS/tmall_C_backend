@@ -51,6 +51,9 @@ public enum ErrInfo {
     // 活动相关
     DSL_SYNTAX_ERROR(1019, "活动创建语句语法有误"),
     CURRENT_ACTIVITY_NOT_AVAILABLE(1020, "当前活动不满足参加条件"),
+    ACTIVITY_STATUS_ERROR(1021, "当前活动尚未发布"),
+    ACTIVITY_TIME_NOT_AVAILABLE(1022, "当前时间不符合活动的开启和结束时间"),
+    ACTIVITY_ID_NOT_EXISTS(1023, "活动ID不存在"),
 
 
     // 通用错误码

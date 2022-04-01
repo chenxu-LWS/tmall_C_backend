@@ -18,7 +18,9 @@ import com.tmall_backend.bysj.common.exception.BizException;
 import com.tmall_backend.bysj.common.page.PageBean;
 import com.tmall_backend.bysj.controller.PageBaseDTO;
 import com.tmall_backend.bysj.controller.activity.dto.QueryActivityByCommodityIdDTO;
+import com.tmall_backend.bysj.controller.activity.dto.QueryAvailableComsByActIdDTO;
 import com.tmall_backend.bysj.entity.Activity;
+import com.tmall_backend.bysj.entity.Commodity;
 import com.tmall_backend.bysj.service.activity.ActivityService;
 import com.tmall_backend.bysj.service.activity.dto.ActivityDTO;
 
@@ -76,6 +78,21 @@ public class ActivityController {
             return new ReturnListObject(true, new ArrayList<>(activityDTOS), 0);
         } catch (BizException e) {
             return new ReturnListObject(e);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/queryAvailableComsByActId")
+    public ReturnPageObject<Commodity> queryAvailableComsByActId(@RequestBody QueryAvailableComsByActIdDTO dto) {
+        if (dto.hasNull() || dto.getActId() == null || dto.getPageNo() < 0 || dto.getPageSize() < 0) {
+            return new ReturnPageObject<>(ErrInfo.PARAMETER_ERROR);
+        }
+        try {
+            final PageBean<Commodity> commodityDTOPageBean =
+                    activityService.queryCommoditiesByActId(dto.getActId(), dto.getPageNo(), dto.getPageSize());
+            return new ReturnPageObject<>(true, commodityDTOPageBean, 0);
+        } catch (BizException e) {
+            return new ReturnPageObject<>(e);
         }
     }
 }

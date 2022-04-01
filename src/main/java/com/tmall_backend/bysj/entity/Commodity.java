@@ -1,5 +1,7 @@
 package com.tmall_backend.bysj.entity;
 
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +28,21 @@ public class Commodity {
     private Integer status;// 商品状态,已创建为(0)，已上架为1，已下架为2
     private Integer inventory;
     private Integer saleVolume;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Commodity commodity = (Commodity) o;
+        return Objects.equals(id, commodity.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

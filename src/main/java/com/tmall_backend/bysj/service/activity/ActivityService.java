@@ -10,10 +10,12 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tmall_backend.bysj.antlr.DSLExplainVisitor;
+import com.tmall_backend.bysj.antlr.DSLGetComVisitor;
 import com.tmall_backend.bysj.antlr.DSLInsertActivityVisitor;
 import com.tmall_backend.bysj.antlr.DSLLexer;
 import com.tmall_backend.bysj.antlr.DSLParser;
@@ -40,6 +42,9 @@ public class ActivityService {
     CommodityMapper commodityMapper;
     @Autowired
     DSLInsertActivityVisitor insertVisitor;
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     Map<String, ParseTree> parseTreeMap;
 
@@ -185,4 +190,51 @@ public class ActivityService {
         }
     }
 
+    /**
+     * 根据活动ID查询所有能参加该活动的商品
+     * @param actId
+     * @return
+     */
+    public PageBean<Commodity> queryCommoditiesByActId(Integer actId, Integer pageNo, Integer pageSize) throws BizException{
+        final Activity activity = activityMapper.queryActivityById(actId);
+        if (activity == null) {
+            throw new BizException(ErrInfo.ACTIVITY_ID_NOT_EXISTS);
+        }
+        if (activity.getOnline() != 1) {
+            throw new BizException(ErrInfo.ACTIVITY_STATUS_ERROR);
+        }
+        final Timestamp startTime = activity.getStartTime();
+        final Timestamp endTime = activity.getEndTime();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        if (now.getTime() < startTime.getTime() || now.getTime() > endTime.getTime()) {
+            throw new BizException(ErrInfo.ACTIVITY_TIME_NOT_AVAILABLE);
+        }
+        try {
+            final String dsl = activity.getDSL();
+            ParseTree tree = parseTreeMap.get(dsl);
+            if (tree == null) {
+                ANTLRInputStream input = new ANTLRInputStream(dsl);
+                DSLLexer lexer = new DSLLexer(input);
+                CommonTokenStream tokens = new CommonTokenStream(lexer);
+                DSLParser parser = new DSLParser(tokens);
+                parser.removeErrorListeners();
+                parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+                tree = parser.init();
+                parseTreeMap.put(dsl, tree);
+            }
+            DSLGetComVisitor getComVisitor = beanFactory.getBean(DSLGetComVisitor.class);
+            getComVisitor.visit(tree);
+            final List<Commodity> commodities = getComVisitor.getCommodities();
+            PageBean<Commodity> result = new PageBean<>();
+            result.setTotalNum(commodities.size());
+            result.setPageNo(pageNo);
+            result.setPageSize(pageSize);
+            result.setList(commodities.subList(
+                    Math.min(pageNo * pageSize, commodities.size()),
+                    Math.min(pageNo * pageSize + pageSize, commodities.size())));
+            return result;
+        } catch (ParseCancellationException e) {
+            throw new BizException(ErrInfo.DSL_SYNTAX_ERROR);
+        }
+    }
 }
