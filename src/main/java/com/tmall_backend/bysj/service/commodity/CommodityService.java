@@ -214,4 +214,21 @@ public class CommodityService {
         result.setList(getCommodityDTOList(new ArrayList<>(), commodities));
         return result;
     }
+
+    /**
+     * 增加或扣减商品销量
+     * @param id
+     * @param number
+     * @return
+     */
+    public Integer increaseOrDecreaseSaleVolume(Integer id, Integer number) {
+        final Commodity commodity = commodityMapper.queryCommodityById(id);
+        if (commodity == null) {
+            throw new BizException(ErrInfo.ORDERINFO_DETAIL_CONTAINS_COMM_NOT_EXISTS);
+        }
+        if (number < 0 && Math.abs(number) > commodity.getSaleVolume()) {
+            throw new BizException(ErrInfo.ORDERINFO_COMM_SALE_VOLUME_DECREASE_ERR);
+        }
+        return commodityMapper.increaseOrDecreaseSaleVolume(id, number);
+    }
 }

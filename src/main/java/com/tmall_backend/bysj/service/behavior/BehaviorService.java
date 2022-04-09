@@ -172,9 +172,9 @@ public class BehaviorService {
             detail.put(commodityId, objV);
             commodityBoughtList.add(Integer.parseInt(commodityId));
             // 库存扣减
-            commodityMapper.increaseOrDecreaseInventory(Integer.parseInt(commodityId), - (Integer) objV.get("number"));
+            commodityService.increaseOrDecreaseInventory(Integer.parseInt(commodityId), - (Integer) objV.get("number"));
             // 销量增加
-            commodityMapper.increaseOrDecreaseSaleVolume(Integer.parseInt(commodityId), (Integer) objV.get("number"));
+            commodityService.increaseOrDecreaseSaleVolume(Integer.parseInt(commodityId), (Integer) objV.get("number"));
         });
         // 新增订单
         Integer newOrderInfoId = orderInfoService.insertOrderInfo((String) userName, JSON.toJSONString(detail), orderPrice);
@@ -453,6 +453,8 @@ public class BehaviorService {
                 commodityId, 4);
         // 将货物库存还原
         commodityService.increaseOrDecreaseInventory(commodityId, num.get());
+        // 将商品的销量退回
+        commodityService.increaseOrDecreaseSaleVolume(commodityId, -num.get());
         // 将退货信息入库
         return backOrderInfoService.insertBackOrderInfo(
                 orderInfoId, commodityId, num.get(), price.get() * num.get());
