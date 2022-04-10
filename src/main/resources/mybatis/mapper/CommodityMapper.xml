@@ -19,7 +19,7 @@
 
     <select id="queryCommodityByConditionByPage" resultMap="commodityMap">
         select * from commodity
-            where 1=1
+            where status != 3
             <if test="list != null and list.size()!=0">
                 AND category_id in
                 <foreach collection="list" item="categories" open="(" separator="," close=")">
@@ -54,7 +54,7 @@
     </select>
     <select id="queryCommodityByConditionTotalNum" resultType="java.lang.Integer">
         select count(*) from commodity
-        where 1=1
+        where status != 3
         <if test="list != null and list.size()!=0">
             AND category_id in
             <foreach collection="list" item="categories" open="(" separator="," close=")">
