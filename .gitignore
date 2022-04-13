@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+src/main/java/com/tmall_backend/bysj/common/oss/OssClient.java
 
 ### STS ###
 .apt_generated
