@@ -16,6 +16,16 @@
         <result column="sale_volume" property="saleVolume"/>
     </resultMap>
 
+    <resultMap id="commoditySaleGroupByCatMap" type="CommoditySaleVolume">
+        <result property="categoryId" column="category_id"/>
+        <result property="totalPrice" column="sum"/>
+    </resultMap>
+
+    <resultMap id="commoditySaleGroupByBrandMap" type="CommoditySaleVolumeByBrand">
+        <result property="brandId" column="brand_id"/>
+        <result property="totalPrice" column="sum"/>
+    </resultMap>
+
 
     <select id="queryCommodityByConditionByPage" resultMap="commodityMap">
         select * from commodity
@@ -150,6 +160,38 @@
     </select>
     <select id="ambiQueryCommodityTotalNum" resultType="java.lang.Integer">
         select count(*) from commodity where commodity_name like '%${ambiName}%'
+    </select>
+
+    <select id="getTopNCategories" resultMap="commoditySaleGroupByCatMap">
+        select
+        a.category_id, sum(a.sale_volume * a.commodity_price) as sum
+        from
+        commodity a left join category b on a.category_id = b.id
+        where b.category_level = 3
+        group by a.category_id
+        order by sum desc
+        <if test="topN != null">
+            limit #{topN}
+        </if>
+    </select>
+
+    <select id="getTopNCommodities" resultMap="commodityMap">
+        select * from commodity order by (sale_volume * commodity_price) desc
+        <if test="topN != null">
+            limit #{topN}
+        </if>
+    </select>
+
+    <select id="getTopNBrands" resultMap="commoditySaleGroupByBrandMap">
+        select
+        a.brand_id, sum(a.sale_volume * a.commodity_price) as sum
+        from
+        commodity a left join brand b on a.brand_id = b.id
+        group by a.brand_id
+        order by sum desc
+        <if test="topN != null">
+            limit #{topN}
+        </if>
     </select>
 
     <insert id="insertCommodity" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Commodity">

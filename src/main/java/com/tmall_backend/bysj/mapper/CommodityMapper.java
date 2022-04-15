@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import com.tmall_backend.bysj.entity.Commodity;
+import com.tmall_backend.bysj.entity.CommoditySaleVolume;
+import com.tmall_backend.bysj.entity.CommoditySaleVolumeByBrand;
 
 
 /**
@@ -42,6 +44,10 @@ public interface CommodityMapper {
     public List<Commodity> ambiQueryCommodityByPage(@Param("ambiName") String ambiName,
             @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     public Integer ambiQueryCommodityTotalNum(@Param("ambiName") String ambiName);
+
+    public List<CommoditySaleVolume> getTopNCategories(@Param("topN") Integer topN);
+    public List<Commodity> getTopNCommodities(@Param("topN") Integer topN);
+    public List<CommoditySaleVolumeByBrand> getTopNBrands(@Param("topN") Integer topN);
 
     public Integer updateCommodityProperties(@Param("id") Integer id, @Param("props") String props);
     public Integer updateCommodityStatus(@Param("id") Integer id, @Param("status") Integer status);
