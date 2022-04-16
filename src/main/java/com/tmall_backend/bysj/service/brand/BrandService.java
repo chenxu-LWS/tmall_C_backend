@@ -1,5 +1,7 @@
 package com.tmall_backend.bysj.service.brand;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ import com.tmall_backend.bysj.mapper.BrandMapper;
 public class BrandService {
     @Autowired
     BrandMapper brandMapper;
+
+    public List<Brand> queryAll() {
+        return brandMapper.queryAllBrand();
+    }
 
     public Brand queryBrandById(Integer id) {
         return brandMapper.queryBrandById(id);

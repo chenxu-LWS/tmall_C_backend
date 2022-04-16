@@ -1,10 +1,13 @@
 package com.tmall_backend.bysj.controller.brand;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.tmall_backend.bysj.common.ReturnListObject;
 import com.tmall_backend.bysj.common.ReturnObject;
 import com.tmall_backend.bysj.common.constants.ErrInfo;
 import com.tmall_backend.bysj.service.brand.BrandService;
@@ -27,5 +30,11 @@ public class BrandController {
             return new ReturnObject(ErrInfo.PARAMETER_ERROR);
         }
         return new ReturnObject(true, brandService.queryBrandById(id), 0);
+    }
+
+    @RequestMapping("/queryAll")
+    @ResponseBody
+    public ReturnListObject queryAll() {
+        return new ReturnListObject(true, new ArrayList<>(brandService.queryAll()), 0);
     }
 }
