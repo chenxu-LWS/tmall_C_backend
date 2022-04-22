@@ -3,6 +3,7 @@ package com.tmall_backend.bysj.controller.behavior;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +29,9 @@ import com.tmall_backend.bysj.controller.behavior.dto.UpdateCommodityToTrolleyDT
 import com.tmall_backend.bysj.service.activity.dto.ActivityDTO;
 import com.tmall_backend.bysj.service.behavior.BehaviorService;
 import com.tmall_backend.bysj.service.behavior.dto.RealPriceFromOrderDTO;
+import com.tmall_backend.bysj.service.commodity.CommodityService;
+import com.tmall_backend.bysj.service.order_info.OrderInfoService;
+import com.tmall_backend.bysj.service.order_info.dto.OrderInfoDTO;
 
 /**
  * @author LiuWenshuo
@@ -39,6 +43,10 @@ public class BehaviorController {
 
     @Autowired
     BehaviorService behaviorService;
+    @Autowired
+    CommodityService commodityService;
+    @Autowired
+    OrderInfoService orderInfoService;
 
     @PostMapping("/increaseOrDecreaseCommodityToTrolley")
     @ResponseBody
@@ -162,6 +170,37 @@ public class BehaviorController {
         try {
             final Integer result = behaviorService.updateStatusInOrderInfoForCom(
                     dto.getOrderInfoId(), dto.getCommodityId(), 3);
+            return new ReturnObject(true, result, 0);
+        } catch (BizException e) {
+            return new ReturnObject(e);
+        }
+    }
+
+    @PostMapping("/cancleCommodityOrder")
+    @ResponseBody
+    public ReturnObject cancleCommodityOrder(@RequestBody EnsureOrderDTO dto) {
+        if (dto.getCommodityId() == null || dto.getOrderInfoId() == null) {
+            return new ReturnObject(ErrInfo.PARAMETER_ERROR);
+        }
+        try {
+            final OrderInfoDTO orderInfoDTO = orderInfoService.queryOrderInfoById(dto.getOrderInfoId());
+            AtomicReference<Integer> num = new AtomicReference<>(0);
+            final Map<String, Object> detail1 = orderInfoDTO.getDetail();
+            detail1.forEach((comId, detail) -> {
+                if (Integer.parseInt(comId) == dto.getCommodityId()) {
+                    Map<String, Object> jsonDetail = (Map<String, Object>) detail;
+                    num.set((Integer) jsonDetail.get("number"));
+                    if ((Integer) jsonDetail.get("status") == 4) {
+                        throw new BizException(ErrInfo.RETURN_COM_ERROR_ALREADY_RETURN);
+                    }
+                }
+            });
+            final Integer result = behaviorService.updateStatusInOrderInfoForCom(
+                    dto.getOrderInfoId(), dto.getCommodityId(), 5);
+            // 将货物库存还原
+            commodityService.increaseOrDecreaseInventory(dto.getCommodityId(), num.get());
+            // 将商品的销量退回
+            commodityService.increaseOrDecreaseSaleVolume(dto.getCommodityId(), -num.get());
             return new ReturnObject(true, result, 0);
         } catch (BizException e) {
             return new ReturnObject(e);
