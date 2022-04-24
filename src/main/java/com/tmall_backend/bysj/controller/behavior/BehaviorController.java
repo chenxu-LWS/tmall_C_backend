@@ -176,9 +176,9 @@ public class BehaviorController {
         }
     }
 
-    @PostMapping("/cancleCommodityOrder")
+    @PostMapping("/cancelCommodityOrder")
     @ResponseBody
-    public ReturnObject cancleCommodityOrder(@RequestBody EnsureOrderDTO dto) {
+    public ReturnObject cancelCommodityOrder(@RequestBody EnsureOrderDTO dto) {
         if (dto.getCommodityId() == null || dto.getOrderInfoId() == null) {
             return new ReturnObject(ErrInfo.PARAMETER_ERROR);
         }
@@ -190,8 +190,8 @@ public class BehaviorController {
                 if (Integer.parseInt(comId) == dto.getCommodityId()) {
                     Map<String, Object> jsonDetail = (Map<String, Object>) detail;
                     num.set((Integer) jsonDetail.get("number"));
-                    if ((Integer) jsonDetail.get("status") == 4) {
-                        throw new BizException(ErrInfo.RETURN_COM_ERROR_ALREADY_RETURN);
+                    if ((Integer) jsonDetail.get("status") != 1) {
+                        throw new BizException(ErrInfo.CANCEL_ORDER_ERROR);
                     }
                 }
             });

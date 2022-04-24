@@ -48,6 +48,7 @@ public enum ErrInfo {
     BUY_ERROR_INVENTORY_NOT_AVAILABLE(1020, "库存不足，下单失败"),
     BUY_ERROR_COMMODITY_STATUS_NOT_ONSALE(1021, "商品不是上架状态，下单失败"),
     RETURN_COM_ERROR_ALREADY_RETURN(1022, "商品已经退款了，不能重复退款"),
+    CANCEL_ORDER_ERROR(1023, "商品无法取消订单，因为已经付款了"),
 
     // 活动相关
     DSL_SYNTAX_ERROR(1019, "活动创建语句语法有误"),
