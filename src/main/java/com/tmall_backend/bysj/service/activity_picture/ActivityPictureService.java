@@ -3,6 +3,8 @@ package com.tmall_backend.bysj.service.activity_picture;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,31 @@ public class ActivityPictureService {
             }
             reader.close();
             return builder.toString();
+        } catch (IOException e) {
+            throw new BizException(ErrInfo.OSS_ERROR);
+        }
+    }
+
+    public List<String> queryActivityPics(Integer number) {
+        try {
+            final List<ActivityPicture> activityPicture = pictureMapper.queryActivityPics(number);
+            List<String> res = new ArrayList<>();
+            for (ActivityPicture picture : activityPicture) {
+                final String pictureObj = picture.getPictureObj();
+                final OSSObject ossObject = ossClient.getOssClient().getObject(ACTIVITY_BUCKET_NAME, pictureObj);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()));
+                StringBuilder builder = new StringBuilder();
+                while (true) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    builder.append(line);
+                }
+                reader.close();
+                res.add(builder.toString());
+            }
+            return res;
         } catch (IOException e) {
             throw new BizException(ErrInfo.OSS_ERROR);
         }

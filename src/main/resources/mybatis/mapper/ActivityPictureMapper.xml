@@ -11,4 +11,8 @@
     <select id="queryActivityPicByID" resultMap="activityPicMap">
         select * from activity_picture where activity_id = #{activityID}
     </select>
+
+    <select id="queryActivityPics" resultMap="activityPicMap">
+        select * from activity_picture order by activity_id limit #{number}
+    </select>
 </mapper>
