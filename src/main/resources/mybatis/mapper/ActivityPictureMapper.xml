@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tmall_backend.bysj.mapper.ActivityPictureMapper">
+    <resultMap id="activityPicMap" type="ActivityPicture">
+        <result column="activity_id" property="activityID"/>
+        <result column="picture_obj" property="pictureObj"/>
+    </resultMap>
+
+    <select id="queryActivityPicByID" resultMap="activityPicMap">
+        select * from activity_picture where activity_id = #{activityID}
+    </select>
+</mapper>
