@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tmall_backend.bysj.common.ReturnListObject;
-import com.tmall_backend.bysj.entity.CommoditySaleVolume;
-import com.tmall_backend.bysj.entity.CommoditySaleVolumeByBrand;
 import com.tmall_backend.bysj.service.commodity.dto.CommodityDTO;
 import com.tmall_backend.bysj.service.statistics.StatisticsService;
+import com.tmall_backend.bysj.service.statistics.dto.CommoditySaleVolumeByBrandDTO;
+import com.tmall_backend.bysj.service.statistics.dto.CommoditySaleVolumeDTO;
 
 /**
  * @author LiuWenshuo
@@ -28,7 +28,7 @@ public class StatisticsController {
     @RequestMapping("/getTopNCategories")
     @ResponseBody
     public ReturnListObject getTopNCategories(Integer topN) {
-        final List<CommoditySaleVolume> topNCategories = statisticsService.getTopNCategories(topN);
+        final List<CommoditySaleVolumeDTO> topNCategories = statisticsService.getTopNCategories(topN);
         return new ReturnListObject(true, new ArrayList<>(topNCategories), 0);
     }
     // 筛选总销量topN的商品
@@ -42,7 +42,7 @@ public class StatisticsController {
     @RequestMapping("/getTopNBrands")
     @ResponseBody
     public ReturnListObject getTopNBrands(Integer topN) {
-        final List<CommoditySaleVolumeByBrand> topNBrands = statisticsService.getTopNBrands(topN);
+        final List<CommoditySaleVolumeByBrandDTO> topNBrands = statisticsService.getTopNBrands(topN);
         return new ReturnListObject(true, new ArrayList<>(topNBrands), 0);
     }
 }

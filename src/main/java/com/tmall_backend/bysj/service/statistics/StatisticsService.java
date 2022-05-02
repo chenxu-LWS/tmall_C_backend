@@ -13,6 +13,8 @@ import com.tmall_backend.bysj.mapper.BrandMapper;
 import com.tmall_backend.bysj.mapper.CategoryMapper;
 import com.tmall_backend.bysj.mapper.CommodityMapper;
 import com.tmall_backend.bysj.service.commodity.dto.CommodityDTO;
+import com.tmall_backend.bysj.service.statistics.dto.CommoditySaleVolumeByBrandDTO;
+import com.tmall_backend.bysj.service.statistics.dto.CommoditySaleVolumeDTO;
 
 
 /**
@@ -33,8 +35,16 @@ public class StatisticsService {
      * @param topN
      * @return
      */
-    public List<CommoditySaleVolume> getTopNCategories(Integer topN) {
-        return commodityMapper.getTopNCategories(topN);
+    public List<CommoditySaleVolumeDTO> getTopNCategories(Integer topN) {
+        final List<CommoditySaleVolume> topNCategories = commodityMapper.getTopNCategories(topN);
+        List<CommoditySaleVolumeDTO> result = new ArrayList<>();
+        topNCategories.forEach(category -> {
+            final CommoditySaleVolumeDTO commoditySaleVolumeDTO = new CommoditySaleVolumeDTO();
+            commoditySaleVolumeDTO.setCategory(categoryMapper.queryCategoryById(category.getCategoryId()));
+            commoditySaleVolumeDTO.setTotalPrice(category.getTotalPrice());
+            result.add(commoditySaleVolumeDTO);
+        });
+        return result;
     }
 
     /**
@@ -61,7 +71,15 @@ public class StatisticsService {
      * @param topN
      * @return
      */
-    public List<CommoditySaleVolumeByBrand> getTopNBrands(Integer topN) {
-        return commodityMapper.getTopNBrands(topN);
+    public List<CommoditySaleVolumeByBrandDTO> getTopNBrands(Integer topN) {
+        final List<CommoditySaleVolumeByBrand> topNBrands = commodityMapper.getTopNBrands(topN);
+        List<CommoditySaleVolumeByBrandDTO> result = new ArrayList<>();
+        topNBrands.forEach(brand -> {
+            final CommoditySaleVolumeByBrandDTO dto = new CommoditySaleVolumeByBrandDTO();
+            dto.setBrand(brandMapper.queryBrandById(brand.getBrandId()));
+            dto.setTotalPrice(brand.getTotalPrice());
+            result.add(dto);
+        });
+        return result;
     }
 }
