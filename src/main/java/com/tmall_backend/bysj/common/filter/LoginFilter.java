@@ -34,9 +34,17 @@ public class LoginFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         if (req.getSession().getAttribute(SESSION_KEY) != null) {
             chain.doFilter(request, response);
-        } else if (req.getRequestURI().contains("login") || req.getRequestURI().contains("register")
-        || req.getRequestURI().contains("isLogin") || req.getRequestURI().contains("/api/category")
-        || req.getRequestURI().contains("getCurrentLoginCustomer")) {
+        } else if (! req.getRequestURI().contains("/api/behavior/buy")
+                && ! req.getRequestURI().contains("/api/behavior/increaseOrDecreaseCommodityToTrolley")
+                && ! req.getRequestURI().contains("/api/behavior/deleteCommodityFromTrolley")
+                && ! req.getRequestURI().contains("pay")
+                && ! req.getRequestURI().contains("/api/behavior/returnCommodity")
+                && ! req.getRequestURI().contains("/api/behavior/ensureOrder")
+                && ! req.getRequestURI().contains("/api/behavior/cancelCommodityOrder")
+                && ! req.getRequestURI().contains("trolley")
+                && ! req.getRequestURI().contains("backOrderInfo")
+                && ! req.getRequestURI().contains("/api/orderInfo")
+        ) {
             chain.doFilter(request, response);
         } else {
             boolean isLogin = false;
